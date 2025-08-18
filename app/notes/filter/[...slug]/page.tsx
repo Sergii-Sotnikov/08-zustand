@@ -17,7 +17,7 @@ export const generateMetadata = async ({params}:Props): Promise<Metadata> =>{
     openGraph: {
       title: `NoteHub: ${slug[0]}`,
       description: `Organize your ${slug[0].toLowerCase()} notes with NoteHub. Write, edit, and filter ${slug[0].toLowerCase()} content fast in a simple, focused interface.`,
-      url: `https://08-zustand-22dvv4ryl-sotnikov-sergiis-projects.vercel.app/notes/filter/${slug[0]}`,
+      url: `https://08-zustand-eta-five.vercel.app/notes/filter/${slug[0]}`,
       siteName: 'NoteHub',
       images: [
         {
