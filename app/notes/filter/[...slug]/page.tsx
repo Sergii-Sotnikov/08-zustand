@@ -14,6 +14,21 @@ export const generateMetadata = async ({params}:Props): Promise<Metadata> =>{
   return {
     title: `NoteHub: ${slug[0]}`,
     description: `Organize your ${slug[0].toLowerCase()} notes with NoteHub. Write, edit, and filter ${slug[0].toLowerCase()} content fast in a simple, focused interface.`,
+    openGraph: {
+      title: `NoteHub: ${slug[0]}`,
+      description: `Organize your ${slug[0].toLowerCase()} notes with NoteHub. Write, edit, and filter ${slug[0].toLowerCase()} content fast in a simple, focused interface.`,
+      url: `https://08-zustand-22dvv4ryl-sotnikov-sergiis-projects.vercel.app/notes/filter/${slug[0]}`,
+      siteName: 'NoteHub',
+      images: [
+        {
+          url: 'https://ac.goit.global/fullstack/react/notehub-og-meta.jpg',
+          width: 1200,
+          height: 630,
+          alt: `${slug[0]}`,
+        },
+      ],
+      type: 'website',
+    },
   }
 }
 
