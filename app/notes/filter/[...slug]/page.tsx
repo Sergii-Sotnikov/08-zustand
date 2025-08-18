@@ -13,7 +13,7 @@ export const generateMetadata = async ({params}:Props): Promise<Metadata> =>{
   console.log(slug[0])
   return {
     title: `NoteHub: ${slug[0]}`,
-    description: `Browse ${slug[0]} notes in NoteHub. Create, edit and search your ${slug[0]} notes with a clean, fast interface.`,
+    description: `Organize your ${slug[0].toLowerCase()} notes with NoteHub. Write, edit, and filter ${slug[0].toLowerCase()} content fast in a simple, focused interface.`,
   }
 }
 
