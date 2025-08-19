@@ -23,15 +23,13 @@ export const metadata:Metadata = {
     },
 }
 
-export const CreateNote = async () =>{
-    return(
-        <main className={css.main}>
-  <div className={css.container}>
-    <h1 className={css.title}>Create note</h1>
-	   {<NoteForm/>}
-  </div>
-</main>
-    )
+export default async function CreateNote() {
+  return (
+    <main className={css.main}>
+      <div className={css.container}>
+        <h1 className={css.title}>Create note</h1>
+        <NoteForm />
+      </div>
+    </main>
+  );
 }
-
-export default CreateNote;
