@@ -13,6 +13,7 @@ import NoteForm from "@/components/NoteForm/NoteForm";
 import { Note } from "@/types/note";
 import css from "./NotePage.module.css";
 import { useDebounce } from 'use-debounce';
+import Link from "next/link";
 
 interface Props {
   initialData: {
@@ -76,17 +77,12 @@ const NotesClients = ({
           <Pagination total={totalPages} onChange={setPage} page={page} />
         )}
         <button className={css.button} onClick={openModal}>
-          Create note +
+          <Link href="/notes/action/create" className={css.link}>Create note +</Link>
         </button>
       </header>
       {isLoading && <Loader />}
       {isError && <ErrorMessage />}
       {noteData.length > 0 && <NoteList notes={noteData} />}
-      {isModalOpen && (
-        <Modal closeModal={closeModal}>
-          <NoteForm closeModal={closeModal} />
-        </Modal>
-      )}
     </div>
   );
 };

@@ -2,6 +2,7 @@ import Link from "next/link";
 import css from "./SidebarNotes.module.css"
 
 
+
 const NotesSidebar = ()=>{
 
       const tags = [
@@ -21,7 +22,6 @@ return(
                 </Link>
       </li>
     ) )}
-
     </ul>
 )
 

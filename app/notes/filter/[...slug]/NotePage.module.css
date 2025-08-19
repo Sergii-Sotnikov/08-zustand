@@ -30,3 +30,8 @@
 .button:hover {
   background-color: #0b5ed7;
 }
+
+.link{
+    text-decoration: none;
+  color: inherit;
+}
