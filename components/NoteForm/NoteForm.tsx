@@ -1,13 +1,13 @@
 "use client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import css from "./NoteForm.module.css";
-import { Formik, Form, Field, ErrorMessage } from "formik";
-import type { FormikHelpers } from "formik";
 import * as Yup from "yup";
 import type { NewNote } from "@/types/note";
 import { postNote } from "@/lib/api";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import { useNoteDraft } from "@/lib/store/noteStore";
+import type { ChangeEvent } from "react";
 
 const OrderSchema = Yup.object().shape({
   title: Yup.string()
@@ -22,18 +22,21 @@ const OrderSchema = Yup.object().shape({
 
 export default function NoteForm() {
   const tags = ["Todo", "Work", "Personal", "Meeting", "Shopping"];
-    const router = useRouter();
-  const { mutate } = useMutation({
+  const { draft, setDraft, clearDraft } = useNoteDraft();
+  const queryClient = useQueryClient();
+  const router = useRouter();
+  const { mutate, isPending } = useMutation({
     mutationFn: postNote,
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["notes"] });
       toast.success("Note added");
+      clearDraft();
       router.back();
     },
     onError() {
       toast.error("Failed to create note");
     },
   });
-
 
   const handleCancel = () => router.back();
 
@@ -42,43 +45,27 @@ export default function NoteForm() {
     mutate(values);
   };
 
-  //   const queryClient = useQueryClient()
-
-  //  const mutation = useMutation({
-  //   mutationFn: (newNote: NewNote) => postNote(newNote),
-  //   onSuccess: () => {
-  //     toast.success("Note added");
-  //     queryClient.invalidateQueries({ queryKey: ["notes"] });
-  //   },
-  //   onError(){
-  //     toast.error("Failed to create note");
-  //   }
-  // });
-
-  //   const handleCloseModal = () => {
-
-  //   };
-
-  // const handleSubmit = (
-  //   values: FormValues,
-  //   formikHelpers: FormikHelpers<FormValues>
-  // ) => {
-  //   mutation.mutate(values, {
-  //     onSettled: () => formikHelpers.resetForm(),
-  //   });
-  // };
-
-  //   const initialFormValues: FormValues = {
-  //     title: "",
-  //     content: "",
-  //     tag: "Todo",
-  //   };
+  const handleChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
+    setDraft({
+      ...(draft as NewNote),
+      [e.target.name as keyof NewNote]: e.target.value,
+    });
+  };
 
   return (
     <form className={css.form} action={handleSubmit}>
       <div className={css.formGroup}>
         <label htmlFor="title">Title</label>
-        <input name="title" id="title" type="text" className={css.input} />
+        <input
+          name="title"
+          id="title"
+          type="text"
+          className={css.input}
+          onChange={handleChange}
+          defaultValue={draft.title}
+        />
       </div>
 
       <div className={css.formGroup}>
@@ -88,12 +75,20 @@ export default function NoteForm() {
           id="content"
           rows={8}
           className={css.textarea}
+          onChange={handleChange}
+          defaultValue={draft.content}
         ></textarea>
       </div>
 
       <div className={css.formGroup}>
         <label>Tag</label>
-        <select name="tag" id="tag" className={css.select}>
+        <select
+          name="tag"
+          id="tag"
+          className={css.select}
+          onChange={handleChange}
+          defaultValue={draft.tag}
+        >
           {tags.map((tag) => (
             <option key={tag} value={tag}>
               {tag}
@@ -102,8 +97,8 @@ export default function NoteForm() {
         </select>
       </div>
       <div className={css.actions}>
-        <button type="submit" className={css.submitButton} disabled={false}>
-          Create
+        <button type="submit" className={css.submitButton} disabled={isPending}>
+          {isPending ? "Creating" : "Create"}
         </button>
         <button
           type="button"
@@ -114,56 +109,5 @@ export default function NoteForm() {
         </button>
       </div>
     </form>
-
-    // <Formik
-    //   initialValues={initialFormValues}
-    //   onSubmit={handleSubmit}
-    //   validationSchema={OrderSchema}
-    // >
-    //   <Form className={css.form}>
-    //     <div className={css.formGroup}>
-    //       <label htmlFor="title">Title</label>
-    //       <Field id="title" type="text" name="title" className={css.input} />
-    //       <ErrorMessage name="title" component="span" className={css.error} />
-    //     </div>
-
-    //     <div className={css.formGroup}>
-    //       <label htmlFor="content">Content</label>
-    //       <Field
-    //         as="textarea"
-    //         id="content"
-    //         name="content"
-    //         rows={8}
-    //         className={css.textarea}
-    //       />
-    //       <ErrorMessage name="content" component="span" className={css.error} />
-    //     </div>
-
-    //     <div className={css.formGroup}>
-    //       <label htmlFor="tag">Tag</label>
-    //       <Field as="select" id="tag" name="tag" className={css.select}>
-    //         <option value="Todo">Todo</option>
-    //         <option value="Work">Work</option>
-    //         <option value="Personal">Personal</option>
-    //         <option value="Meeting">Meeting</option>
-    //         <option value="Shopping">Shopping</option>
-    //       </Field>
-    //       <ErrorMessage name="tag" component="span" className={css.error} />
-    //     </div>
-
-    //     <div className={css.actions}>
-    //       <button
-    //         type="button"
-    //         className={css.cancelButton}
-    //         onClick={handleCloseModal}
-    //       >
-    //         Cancel
-    //       </button>
-    //       <button type="submit" className={css.submitButton} disabled={false}>
-    //         Create note
-    //       </button>
-    //     </div>
-    //   </Form>
-    // </Formik>
   );
 }
